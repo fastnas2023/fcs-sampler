@@ -50,7 +50,7 @@ jobs:
             "dist/FCS细胞采样工具.app"
           
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FCS细胞采样工具-macOS-v${{ steps.get_version.outputs.VERSION }}
           path: |
@@ -109,7 +109,7 @@ jobs:
           pynsist installer.cfg
           
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FCS细胞采样工具-Windows-v${{ steps.get_version.outputs.VERSION }}
           path: |
