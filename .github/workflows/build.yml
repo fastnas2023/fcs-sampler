@@ -50,7 +50,7 @@ jobs:
             "dist/FCS_Sampler_Tool.app"
           
       - name: Upload macOS artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}
           path: |
@@ -109,7 +109,7 @@ jobs:
           pynsist installer.cfg
           
       - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}
           path: |
