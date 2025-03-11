@@ -52,6 +52,15 @@ class I18n:
             "check_update": "检查更新",
             "developed_by": "由",
             "studio": "工作室开发",
+            # 菜单
+            "menu_file": "文件",
+            "menu_open_fcs": "打开FCS文件",
+            "menu_select_output": "选择输出目录",
+            "menu_exit": "退出",
+            "menu_edit": "编辑",
+            "menu_clear_info": "清除信息",
+            "menu_window": "窗口",
+            "menu_check_updates": "检查更新",
             # 选项卡标题
             "tab_sampling": "采样设置",
             "tab_plugins": "插件功能",
@@ -175,6 +184,18 @@ class I18n:
             "continuous_desc": "连续采样前{count}个细胞",
             "interval_desc": "每{interval}个细胞采样1个",
             "random_desc": "随机采样{count}个细胞",
+            # 插件相关
+            "no_plugins_available": "暂无可用插件",
+            "no_plugins": "未找到任何插件。请先安装插件。",
+            "plugin_name": "名称",
+            "plugin_version": "版本",
+            "plugin_author": "作者",
+            "plugin_description": "描述",
+            "plugin_no_ui": "插件 '{plugin_name}' 未提供UI元素",
+            "plugin_ui_error": "加载插件UI时出错: {error}",
+            "language": "语言",
+            "language_changed": "语言已更改，界面已更新",
+            "info": "提示",
         }
 
     def _load_english(self):
@@ -184,12 +205,21 @@ class I18n:
             "check_update": "Check Update",
             "developed_by": "Developed by",
             "studio": "Studio",
-            # Tab titles
+            # 菜单
+            "menu_file": "File",
+            "menu_open_fcs": "Open FCS File",
+            "menu_select_output": "Select Output Directory",
+            "menu_exit": "Exit",
+            "menu_edit": "Edit",
+            "menu_clear_info": "Clear Info",
+            "menu_window": "Window",
+            "menu_check_updates": "Check for Updates",
+            # 选项卡标题
             "tab_sampling": "Sampling",
             "tab_plugins": "Plugins",
             "tab_plugin_mgmt": "Plugin Management",
             "tab_about": "About & Support",
-            # File settings
+            # 文件设置
             "file_settings": "File Settings",
             "fcs_file": "FCS File:",
             "browse": "Browse...",
@@ -307,6 +337,18 @@ Developed by cn111.net Studio, current version {version}""",
             "continuous_desc": "Continuously sampled the first {count} cells",
             "interval_desc": "Sampled 1 cell every {interval} cells",
             "random_desc": "Randomly sampled {count} cells",
+            # 插件相关
+            "no_plugins_available": "No Plugins Available",
+            "no_plugins": "No plugins available, please install plugins first",
+            "plugin_name": "Name",
+            "plugin_version": "Version",
+            "plugin_author": "Author",
+            "plugin_description": "Description",
+            "plugin_no_ui": "Plugin '{plugin_name}' does not provide UI elements",
+            "plugin_ui_error": "Error loading plugin UI: {error}",
+            "language": "Language",
+            "language_changed": "Language changed, UI updated",
+            "info": "Information",
         }
 
     def set_language(self, lang_code):
@@ -525,6 +567,28 @@ class FcsSamplerGUI:
         self.root.geometry("700x850")
         self.root.configure(bg="#f5f5f5")
 
+        # 创建菜单栏
+        self.menubar = tk.Menu(root)
+        root.config(menu=self.menubar)
+        
+        # 文件菜单
+        self.file_menu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label=i18n.get("menu_file"), menu=self.file_menu)
+        self.file_menu.add_command(label=i18n.get("menu_open_fcs"), command=self.select_file)
+        self.file_menu.add_command(label=i18n.get("menu_select_output"), command=self.select_output_dir)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label=i18n.get("menu_exit"), command=root.quit)
+        
+        # 编辑菜单
+        self.edit_menu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label=i18n.get("menu_edit"), menu=self.edit_menu)
+        self.edit_menu.add_command(label=i18n.get("menu_clear_info"), command=self.clear_info)
+        
+        # 窗口菜单
+        self.window_menu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label=i18n.get("menu_window"), menu=self.window_menu)
+        self.window_menu.add_command(label=i18n.get("menu_check_updates"), command=lambda: self.check_for_updates(silent=False))
+
         # 初始化插件管理器
         self.plugin_manager = PluginManager()
         self.plugin_manager.discover_plugins()
@@ -654,6 +718,25 @@ class FcsSamplerGUI:
         self.release_url = None
         self.check_for_updates(silent=True)
 
+        # 更新菜单文本
+        if hasattr(self, "menubar"):
+            # 文件菜单
+            self.menubar.entryconfig(0, label=i18n.get("menu_file"))
+            if hasattr(self, "file_menu"):
+                self.file_menu.entryconfig(0, label=i18n.get("menu_open_fcs"))
+                self.file_menu.entryconfig(1, label=i18n.get("menu_select_output"))
+                self.file_menu.entryconfig(3, label=i18n.get("menu_exit"))
+            
+            # 编辑菜单
+            self.menubar.entryconfig(1, label=i18n.get("menu_edit"))
+            if hasattr(self, "edit_menu"):
+                self.edit_menu.entryconfig(0, label=i18n.get("menu_clear_info"))
+            
+            # 窗口菜单
+            self.menubar.entryconfig(2, label=i18n.get("menu_window"))
+            if hasattr(self, "window_menu"):
+                self.window_menu.entryconfig(0, label=i18n.get("menu_check_updates"))
+
     def _change_language(self, event):
         """切换语言"""
         new_lang = self.lang_var.get()
@@ -776,6 +859,16 @@ class FcsSamplerGUI:
         if hasattr(self, "plugin_dev_label"):
             self.plugin_dev_label.config(text=i18n.get("plugin_dev"))
 
+        # 更新采样模式单选按钮
+        if hasattr(self, "continuous_radio"):
+            self.continuous_radio.config(text=i18n.get("continuous"))
+            
+        if hasattr(self, "interval_radio"):
+            self.interval_radio.config(text=i18n.get("interval"))
+            
+        if hasattr(self, "random_radio"):
+            self.random_radio.config(text=i18n.get("random"))
+
     def _init_sampling_tab(self, tab):
         """初始化采样选项卡内容"""
         # 文件选择部分
@@ -848,15 +941,20 @@ class FcsSamplerGUI:
         mode_frame = ttk.Frame(param_section)
         mode_frame.grid(row=3, column=1, columnspan=2, sticky=tk.W, pady=(10, 0))
         
-        ttk.Radiobutton(
+        self.continuous_radio = ttk.Radiobutton(
             mode_frame, text=i18n.get("continuous"), variable=self.sample_mode, value="continuous"
-        ).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Radiobutton(
+        )
+        self.continuous_radio.pack(side=tk.LEFT, padx=(0, 10))
+        
+        self.interval_radio = ttk.Radiobutton(
             mode_frame, text=i18n.get("interval"), variable=self.sample_mode, value="interval"
-        ).pack(side=tk.LEFT, padx=(0, 10))
-        ttk.Radiobutton(
+        )
+        self.interval_radio.pack(side=tk.LEFT, padx=(0, 10))
+        
+        self.random_radio = ttk.Radiobutton(
             mode_frame, text=i18n.get("random"), variable=self.sample_mode, value="random"
-        ).pack(side=tk.LEFT)
+        )
+        self.random_radio.pack(side=tk.LEFT)
 
         # 按钮区域
         button_frame = ttk.Frame(tab)
@@ -1572,31 +1670,41 @@ class FcsSamplerGUI:
             self.plugin_combobox.current(0)  # 选择第一个插件
             self._on_plugin_selected(None)  # 触发选择事件
         else:
-            self.plugin_combobox["values"] = ["暂无可用插件"]
+            self.plugin_combobox["values"] = [i18n.get("no_plugins_available")]
             self.plugin_combobox.current(0)
-            self.plugin_desc_label.config(text="未找到任何插件。请先安装插件。")
+            # 清除之前的文本
+            self.plugin_desc_text.config(state=tk.NORMAL)
+            self.plugin_desc_text.delete(1.0, tk.END)
+            self.plugin_desc_text.insert(tk.END, i18n.get("no_plugins"))
+            self.plugin_desc_text.config(state=tk.DISABLED)
 
     def _on_plugin_selected(self, event):
         """处理插件选择事件"""
         selected = self.selected_plugin.get()
-        if selected == "暂无可用插件":
+        if selected == i18n.get("no_plugins_available"):
             return
 
         plugin = self.plugin_manager.get_plugin(selected)
         if plugin:
             info = plugin.get_info()
-            desc_text = f"""名称: {info['name']}
-版本: {info['version']}
-作者: {info['author']}
-
-描述: {info['description']}"""
-            self.plugin_desc_label.config(text=desc_text)
+            # 清除之前的文本
+            self.plugin_desc_text.config(state=tk.NORMAL)
+            self.plugin_desc_text.delete(1.0, tk.END)
+            
+            # 添加新的描述文本
+            desc_text = f"{i18n.get('plugin_name')}: {info['name']}\n"
+            desc_text += f"{i18n.get('plugin_version')}: {info['version']}\n"
+            desc_text += f"{i18n.get('plugin_author')}: {info['author']}\n\n"
+            desc_text += f"{i18n.get('plugin_description')}: {info['description']}"
+            
+            self.plugin_desc_text.insert(tk.END, desc_text)
+            self.plugin_desc_text.config(state=tk.DISABLED)
 
     def _load_selected_plugin(self):
         """加载选中的插件"""
         selected = self.selected_plugin.get()
-        if selected == "暂无可用插件":
-            messagebox.showinfo("提示", "暂无可用插件，请先安装插件")
+        if selected == i18n.get("no_plugins_available"):
+            messagebox.showinfo(i18n.get("info"), i18n.get("no_plugins"))
             return
 
         plugin = self.plugin_manager.get_plugin(selected)
@@ -1613,13 +1721,13 @@ class FcsSamplerGUI:
                 else:
                     ttk.Label(
                         self.plugin_function_container,
-                        text=f"插件 '{selected}' 未提供UI元素",
+                        text=i18n.get("plugin_no_ui", plugin_name=selected),
                         wraplength=600,
                     ).pack(pady=20)
             except Exception as e:
                 ttk.Label(
                     self.plugin_function_container,
-                    text=f"加载插件UI时出错: {str(e)}",
+                    text=i18n.get("plugin_ui_error", error=str(e)),
                     wraplength=600,
                 ).pack(pady=20)
 
