@@ -10,7 +10,7 @@ def build_mac_app():
         return
     
     # 基本配置
-    app_name = 'FCS细胞采样工具'
+    app_name = 'FCS_Sampler_Tool'
     main_script = 'fcs_sampler_gui.py'
     icon_file = 'app_icon.icns'
     
