@@ -7,6 +7,11 @@ on:
     branches: [ main, master ]
   workflow_dispatch:  # Manual trigger
 
+# 添加权限配置
+permissions:
+  contents: write
+  packages: write
+  
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -84,6 +89,9 @@ jobs:
           path: artifacts
           merge-multiple: true
           
+      - name: List downloaded files
+        run: find artifacts -type f | sort
+          
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -92,8 +100,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
-            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.exe
+            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/*_Setup.exe
+            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/*.exe
           tag_name: v${{ steps.get_version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
