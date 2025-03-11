@@ -129,7 +129,10 @@ jobs:
       
       - name: Download all artifacts
         uses: actions/download-artifact@v4
-        
+        with:
+          path: artifacts
+          merge-multiple: true
+      
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -138,8 +141,8 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.dmg
-            FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
+            artifacts/FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.dmg
+            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
           tag_name: v${{ steps.get_version.outputs.VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
