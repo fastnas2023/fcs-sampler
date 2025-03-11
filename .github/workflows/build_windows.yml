@@ -1,4 +1,4 @@
-name: Build Windows App
+name: Build FCS Sampler Tool (Windows)
 
 on:
   push:

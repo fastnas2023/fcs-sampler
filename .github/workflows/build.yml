@@ -1,4 +1,4 @@
-name: Build FCS细胞采样工具
+name: Build FCS Sampler Tool (macOS & Windows)
 
 on:
   push:
@@ -31,31 +31,31 @@ jobs:
       - name: Build macOS app
         run: |
           python build_mac_app.py
-          chmod -R 755 dist/FCS细胞采样工具.app
-          xattr -rd com.apple.quarantine dist/FCS细胞采样工具.app || true
+          chmod -R 755 dist/FCS_Sampler_Tool.app
+          xattr -rd com.apple.quarantine dist/FCS_Sampler_Tool.app || true
           
       - name: Create DMG
         run: |
           brew install create-dmg
           create-dmg \
-            --volname "FCS细胞采样工具" \
+            --volname "FCS_Sampler_Tool" \
             --volicon "app_icon.icns" \
             --window-pos 200 120 \
             --window-size 600 400 \
             --icon-size 100 \
-            --icon "FCS细胞采样工具.app" 175 190 \
-            --hide-extension "FCS细胞采样工具.app" \
+            --icon "FCS_Sampler_Tool.app" 175 190 \
+            --hide-extension "FCS_Sampler_Tool.app" \
             --app-drop-link 425 190 \
-            "dist/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}.dmg" \
-            "dist/FCS细胞采样工具.app"
+            "dist/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.dmg" \
+            "dist/FCS_Sampler_Tool.app"
           
       - name: Upload macOS artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: FCS细胞采样工具-macOS-v${{ steps.get_version.outputs.VERSION }}
+          name: FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}
           path: |
-            dist/FCS细胞采样工具.app
-            dist/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}.dmg
+            dist/FCS_Sampler_Tool.app
+            dist/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.dmg
           
   build-windows:
     runs-on: windows-latest
@@ -79,13 +79,13 @@ jobs:
           
       - name: Build Windows exe
         run: |
-          pyinstaller --name="FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}" --onefile --windowed --icon=app_icon.ico --add-data="app_icon.ico;." --hidden-import=numpy --hidden-import=pandas --hidden-import=fcsparser --hidden-import=flowio --hidden-import=tkinter --hidden-import=PIL --hidden-import=matplotlib --hidden-import=scipy fcs_sampler_gui.py
+          pyinstaller --name="FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}" --onefile --windowed --icon=app_icon.ico --add-data="app_icon.ico;." --hidden-import=numpy --hidden-import=pandas --hidden-import=fcsparser --hidden-import=flowio --hidden-import=tkinter --hidden-import=PIL --hidden-import=matplotlib --hidden-import=scipy fcs_sampler_gui.py
           
       - name: Create Windows installer
         run: |
           pip install pynsist
           echo "[Application]
-          name=FCS细胞采样工具
+          name=FCS_Sampler_Tool
           version=${{ steps.get_version.outputs.VERSION }}
           entry_point=fcs_sampler_gui:main
           icon=app_icon.ico
@@ -104,17 +104,17 @@ jobs:
               scipy
           
           [Build]
-          installer_name=FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}_安装程序.exe
+          installer_name=FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
           " > installer.cfg
           pynsist installer.cfg
           
       - name: Upload Windows artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: FCS细胞采样工具-Windows-v${{ steps.get_version.outputs.VERSION }}
+          name: FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}
           path: |
-            dist/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}.exe
-            build/nsis/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}_安装程序.exe
+            dist/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.exe
+            build/nsis/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
             
   create-release:
     needs: [build-macos, build-windows]
@@ -134,10 +134,10 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          name: FCS细胞采样工具 v${{ steps.get_version.outputs.VERSION }}
+          name: FCS Sampler Tool v${{ steps.get_version.outputs.VERSION }}
           draft: false
           prerelease: false
           files: |
-            FCS细胞采样工具-macOS-v${{ steps.get_version.outputs.VERSION }}/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}.dmg
-            FCS细胞采样工具-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS细胞采样工具_v${{ steps.get_version.outputs.VERSION }}_安装程序.exe
+            FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.dmg
+            FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
           tag_name: v${{ steps.get_version.outputs.VERSION }}
