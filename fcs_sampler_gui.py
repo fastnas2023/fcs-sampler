@@ -103,7 +103,7 @@ class I18n:
 详细文档请参考项目GitHub页面。""",
             "view_github_doc": "查看GitHub文档",
             # 关于与支持
-            "app_desc": """FCS细胞采样工具是一个用于处理流式细胞仪数据的应用程序。
+            "app_desc": """FCS_Sampler_Tool是一个用于处理流式细胞仪数据的应用程序。
         
 它可以帮助您从大型FCS文件中提取样本，支持多种采样模式：
 • 连续采样：从指定位置开始连续提取指定数量的细胞
@@ -235,7 +235,7 @@ class I18n:
 For detailed documentation, please refer to the project GitHub page.""",
             "view_github_doc": "View GitHub Docs",
             # About & Support
-            "app_desc": """FCS Cell Sampling Tool is an application for processing flow cytometry data.
+            "app_desc": """FCS_Sampler_Tool is an application for processing flow cytometry data.
         
 It helps you extract samples from large FCS files, supporting multiple sampling modes:
 • Continuous: Extract a specified number of cells starting from a specified position

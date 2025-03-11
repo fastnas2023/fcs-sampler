@@ -19,7 +19,7 @@ def build_windows_exe():
         os.system(f'{wine_python} -m pip install {package}')
     
     # 运行 PyInstaller
-    build_command = f'{wine_python} -m PyInstaller FCS细胞采样工具_windows.spec'
+    build_command = f'{wine_python} -m PyInstaller FCS_Sampler_Tool_windows.spec'
     os.system(build_command)
 
 if __name__ == '__main__':
