@@ -141,6 +141,13 @@ jobs:
       - name: List downloaded files
         run: find artifacts -type f | sort
       
+      - name: Debug GitHub Token
+        run: |
+          echo "Token permissions check (should be non-empty):"
+          echo "Has contents:write permission: ${{ contains(github.token, 'contents:write') != '' }}"
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+          echo "GITHUB_REF: ${{ github.ref }}"
+          
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -149,8 +156,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/FCS-Sampler-Tool-macOS-v${{ steps.get_version.outputs.VERSION }}/*.dmg
-            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/*_Setup.exe
+            artifacts/**/*.dmg
+            artifacts/**/*_Setup.exe
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -72,6 +72,13 @@ jobs:
             dist/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.exe
             build/nsis/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
             
+      - name: Debug GitHub Token
+        run: |
+          echo "Token permissions check (should be non-empty):"
+          echo "Has contents:write permission: ${{ contains(github.token, 'contents:write') != '' }}"
+          echo "GITHUB_REPOSITORY: ${{ github.repository }}"
+          echo "GITHUB_REF: ${{ github.ref }}"
+          
   create-release:
     needs: [build-windows]
     runs-on: ubuntu-latest
@@ -100,8 +107,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/*_Setup.exe
-            artifacts/FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/*.exe
+            artifacts/**/*_Setup.exe
+            artifacts/**/*.exe
           tag_name: v${{ steps.get_version.outputs.VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          token: ${{ secrets.GITHUB_TOKEN }} 
