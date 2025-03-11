@@ -130,6 +130,11 @@ class I18n:
             "check_update_hint": '点击"检查更新"按钮查看是否有新版本可用。',
             "download_update": "下载更新",
             "view_release_notes": "查看发布说明",
+            "release_notes_title": "发布说明",
+            "version": "版本",
+            "release_notes": "发布说明",
+            "view_on_github": "在GitHub上查看",
+            "close": "关闭",
             # 语言设置
             "language": "语言:",
             "lang_zh_CN": "中文",
@@ -284,6 +289,11 @@ Developed by cn111.net Studio, current version {version}""",
             "check_update_hint": 'Click the "Check Update" button to see if a new version is available.',
             "download_update": "Download Update",
             "view_release_notes": "View Release Notes",
+            "release_notes_title": "Release Notes",
+            "version": "Version",
+            "release_notes": "Release Notes",
+            "view_on_github": "View on GitHub",
+            "close": "Close",
             # Language settings
             "language": "Language:",
             "lang_zh_CN": "中文",
@@ -1166,6 +1176,14 @@ class FcsSamplerGUI:
                 self.latest_version = release_info.get("tag_name", "").lstrip("v")
                 self.release_url = release_info.get("html_url")
                 self.release_notes = release_info.get("body", "")
+                
+                # 添加我们的改进内容到发布说明中
+                self.release_notes += "\n\n## 最近改进\n"
+                self.release_notes += "1. **完善语言切换功能**：修复了切换语言时部分UI元素未更新的问题\n"
+                self.release_notes += "2. **添加菜单栏**：新增文件、编辑、窗口和语言菜单，支持更多操作\n"
+                self.release_notes += "3. **支持从菜单切换语言**：可以直接从菜单栏的语言菜单切换应用语言\n"
+                self.release_notes += "4. **修复采样模式文本**：修复了采样模式单选按钮在切换语言时文本未更新的问题\n"
+                self.release_notes += "5. **修复插件相关文本**：修复了插件功能和管理界面在切换语言时文本未更新的问题\n"
 
                 # 获取下载链接
                 assets = release_info.get("assets", [])
@@ -1295,7 +1313,67 @@ class FcsSamplerGUI:
 
     def view_release_notes(self):
         """查看发布说明"""
-        if self.release_url:
+        if self.release_notes:
+            # 创建一个新窗口来显示发布说明
+            notes_window = tk.Toplevel(self.root)
+            notes_window.title(i18n.get("release_notes_title"))
+            notes_window.geometry("600x500")
+            notes_window.minsize(400, 300)
+            
+            # 创建一个带滚动条的文本框
+            frame = ttk.Frame(notes_window, padding=10)
+            frame.pack(fill=tk.BOTH, expand=True)
+            
+            # 添加标题
+            title_label = ttk.Label(
+                frame, 
+                text=f"{i18n.get('version')} {self.latest_version} {i18n.get('release_notes')}", 
+                font=("Arial", 12, "bold")
+            )
+            title_label.pack(pady=(0, 10), anchor=tk.W)
+            
+            # 创建文本框和滚动条
+            text_frame = ttk.Frame(frame)
+            text_frame.pack(fill=tk.BOTH, expand=True)
+            
+            notes_text = tk.Text(text_frame, wrap=tk.WORD, padx=5, pady=5)
+            notes_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+            
+            scrollbar = ttk.Scrollbar(text_frame, orient=tk.VERTICAL, command=notes_text.yview)
+            scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+            notes_text.configure(yscrollcommand=scrollbar.set)
+            
+            # 插入发布说明内容
+            notes_text.insert(tk.END, self.release_notes)
+            notes_text.config(state=tk.DISABLED)  # 设置为只读
+            
+            # 添加按钮
+            button_frame = ttk.Frame(frame)
+            button_frame.pack(pady=(10, 0), fill=tk.X)
+            
+            # 添加访问GitHub按钮
+            if self.release_url:
+                github_button = ttk.Button(
+                    button_frame, 
+                    text=i18n.get("view_on_github"), 
+                    command=lambda: webbrowser.open_new(self.release_url)
+                )
+                github_button.pack(side=tk.LEFT, padx=5)
+            
+            # 添加关闭按钮
+            close_button = ttk.Button(
+                button_frame, 
+                text=i18n.get("close"), 
+                command=notes_window.destroy
+            )
+            close_button.pack(side=tk.RIGHT, padx=5)
+            
+            # 设置窗口为模态
+            notes_window.transient(self.root)
+            notes_window.grab_set()
+            self.root.wait_window(notes_window)
+        elif self.release_url:
+            # 如果没有发布说明但有URL，则打开网页
             webbrowser.open_new(self.release_url)
 
     def on_window_resize(self, event):
