@@ -91,4 +91,6 @@ jobs:
           files: |
             FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}_Setup.exe
             FCS-Sampler-Tool-Windows-v${{ steps.get_version.outputs.VERSION }}/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}.exe
-          tag_name: v${{ steps.get_version.outputs.VERSION }} 
+          tag_name: v${{ steps.get_version.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
