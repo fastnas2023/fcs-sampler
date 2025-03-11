@@ -61,6 +61,7 @@ class I18n:
             "menu_clear_info": "清除信息",
             "menu_window": "窗口",
             "menu_check_updates": "检查更新",
+            "menu_language": "语言",
             # 选项卡标题
             "tab_sampling": "采样设置",
             "tab_plugins": "插件功能",
@@ -214,6 +215,7 @@ class I18n:
             "menu_clear_info": "Clear Info",
             "menu_window": "Window",
             "menu_check_updates": "Check for Updates",
+            "menu_language": "Language",
             # 选项卡标题
             "tab_sampling": "Sampling",
             "tab_plugins": "Plugins",
@@ -588,6 +590,12 @@ class FcsSamplerGUI:
         self.window_menu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label=i18n.get("menu_window"), menu=self.window_menu)
         self.window_menu.add_command(label=i18n.get("menu_check_updates"), command=lambda: self.check_for_updates(silent=False))
+        
+        # 语言菜单
+        self.language_menu = tk.Menu(self.menubar, tearoff=0)
+        self.menubar.add_cascade(label=i18n.get("menu_language"), menu=self.language_menu)
+        self.language_menu.add_command(label="中文 (Chinese)", command=lambda: self._change_language_from_menu("zh_CN"))
+        self.language_menu.add_command(label="English", command=lambda: self._change_language_from_menu("en_US"))
 
         # 初始化插件管理器
         self.plugin_manager = PluginManager()
@@ -736,6 +744,9 @@ class FcsSamplerGUI:
             self.menubar.entryconfig(2, label=i18n.get("menu_window"))
             if hasattr(self, "window_menu"):
                 self.window_menu.entryconfig(0, label=i18n.get("menu_check_updates"))
+                
+            # 语言菜单
+            self.menubar.entryconfig(3, label=i18n.get("menu_language"))
 
     def _change_language(self, event):
         """切换语言"""
@@ -1800,6 +1811,16 @@ class FcsSamplerGUI:
                 messagebox.showerror("错误", f"卸载插件 '{plugin_name}' 失败")
         except Exception as e:
             messagebox.showerror("错误", f"卸载插件时出错: {str(e)}")
+
+    def _change_language_from_menu(self, lang_code):
+        """从菜单切换语言"""
+        # 更新语言变量
+        self.lang_var.set(lang_code)
+        # 调用语言切换方法
+        if i18n.set_language(lang_code):
+            # 更新UI文本
+            self._update_ui_texts()
+            messagebox.showinfo(i18n.get("info"), i18n.get("language_changed"))
 
 
 def sample_cells(raw_data, range_start, range_end, target_count, mode="continuous"):
