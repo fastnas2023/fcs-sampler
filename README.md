@@ -114,4 +114,23 @@ FCS_Sampler_Tool支持插件系统，允许用户扩展软件功能，实现更�
 如有问题或建议，请通过以下方式联系我们:
 
 - GitHub Issues: [https://github.com/fastnas2023/fcs-sampler/issues](https://github.com/fastnas2023/fcs-sampler/issues)
-- 电子邮件: support@example.com
+- 电子邮件: huaxumedia@gmail.com
+
+## 打赏支持
+
+如果您觉得这个工具对您有所帮助，欢迎扫描下方二维码进行打赏支持！您的支持将帮助我们持续改进和维护这个工具。
+
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="qrcode-wechat-small.png" alt="微信支付" width="300"/>
+        <p>WeChat(微信)</p>
+      </td>
+      <td align="center">
+        <img src="qrcode-alipay-small.png" alt="支付宝" width="300"/>
+        <p>Alipay(支付宝)</p>
+      </td>
+    </tr>
+  </table>
+</div>
