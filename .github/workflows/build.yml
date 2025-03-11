@@ -156,19 +156,24 @@ jobs:
           
           # 复制可执行文件
           cp dist/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }} AppDir/usr/bin/
+          chmod +x AppDir/usr/bin/FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}
           
           # 创建.desktop文件
-          echo "[Desktop Entry]
+          cat > AppDir/fcs-sampler.desktop << EOF
+          [Desktop Entry]
+          Type=Application
           Name=FCS Sampler Tool
           Exec=FCS_Sampler_Tool_v${{ steps.get_version.outputs.VERSION }}
           Icon=fcs-sampler
-          Type=Application
           Categories=Science;Biology;
           Comment=Tool for sampling FCS files
-          " > AppDir/usr/share/applications/fcs-sampler.desktop
+          EOF
           
           # 复制图标
-          cp app_icon.png AppDir/usr/share/icons/hicolor/256x256/apps/fcs-sampler.png
+          cp app_icon.png AppDir/fcs-sampler.png
+          
+          # 显示AppDir结构以便调试
+          find AppDir -type f | sort
           
           # 下载并使用appimagetool
           wget -O appimagetool "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
